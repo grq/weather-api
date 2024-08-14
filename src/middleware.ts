@@ -20,7 +20,7 @@ export const authenticate = (req: IReqUser, res: Response, next: NextFunction) =
     }
 }
 
-export const limiter = (endpoint: string, msTimeout: number, limit: number) => {
+export const rateLimiter = (endpoint: string, msTimeout: number, limit: number) => {
     return async (req: IReqUser, res: Response, next: NextFunction) => {
         const userId = req.user?.userId
         if (userId) {
