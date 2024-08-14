@@ -3,6 +3,7 @@ import jwt from 'jwt-simple'
 import redisClient, { RedisKey } from './redis'
 import { IReqUser } from './types'
 import dotenv from 'dotenv'
+import { AppError } from './error-handler'
 
 dotenv.config()
 
@@ -26,19 +27,14 @@ export const rateLimiter = (endpoint: string, msTimeout: number, limit: number) 
         if (userId) {
             const currentTime = Math.floor(Date.now() / 1000).toString()
             const key = RedisKey.UserEndpointRateCount(userId, endpoint, currentTime)
-            try {
-                const currentCount = await redisClient.get(key)
-                if (currentCount && Number(currentCount) >= limit) {
-                    return res.status(429).send('Too many requests')
-                }
-                await redisClient.multi().incr(key).expire(key, msTimeout / 1000).exec()
-                next()
-            } catch (err) {
-                console.error('Error in rate limiter:', err)
-                res.status(500).send('Internal server error')
+            const currentCount = await redisClient.get(key)
+            if (currentCount && Number(currentCount) >= limit) {
+                return res.status(429).send('Too many requests')
             }
+            await redisClient.multi().incr(key).expire(key, msTimeout / 1000).exec()
+            next()
         } else {
-            return next()
+            throw new AppError('Unauthorized', 401)
         }
     }
 }

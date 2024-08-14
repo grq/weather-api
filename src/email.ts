@@ -40,7 +40,7 @@ export const sendUserRequestLimitExceed = async (userId: number): Promise<void> 
                 throw new Error('Email was not accepted')
             }
         } catch (error) {
-            console.error('Error sending email:', error)
+            // console.error('Error sending email:', error)
             throw error
         }
     } else {

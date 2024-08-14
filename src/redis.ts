@@ -21,13 +21,13 @@ const redisClient: RedisClientType = createClient({
 })
 
 redisClient.on('error', e => {
-    console.error('Redis Client Error', e)
+    // console.error('Redis Client Error', e)
 })
 
 redisClient.connect()
     .then(() => console.log('Connected to Redis'))
     .catch(e => {
-        console.error('Failed to connect to Redis:', e)
+        // console.error('Failed to connect to Redis:', e)
     })
 
 export default redisClient

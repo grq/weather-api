@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import logger from './logger'
 
 export class AppError extends Error {
     statusCode: number
@@ -16,6 +17,6 @@ export class AppError extends Error {
 export const errorHandler = (err: AppError, req: Request, res: Response, next: NextFunction) => {
     const code = err.statusCode || 500
     const message = err.message || 'Internal Server Error'
-    console.error(`API ERROR : ${code} : ${message}\n`, err)
+    logger.error(`StatusCode: ${code}, Message: ${message}, Stack: ${err.stack}`)
     res.status(code).send(message)
 }
